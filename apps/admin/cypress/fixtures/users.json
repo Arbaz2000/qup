@@ -1,0 +1,30 @@
+{
+  "admin": {
+    "email": "admin@qup.com",
+    "username": "admin",
+    "displayName": "Admin User",
+    "password": "password123",
+    "role": "ADMIN"
+  },
+  "moderator": {
+    "email": "moderator@qup.com",
+    "username": "moderator",
+    "displayName": "Moderator User",
+    "password": "password123",
+    "role": "MODERATOR"
+  },
+  "special": {
+    "email": "special@qup.com",
+    "username": "special",
+    "displayName": "Special User",
+    "password": "password123",
+    "role": "SPECIAL"
+  },
+  "normal": {
+    "email": "normal@qup.com",
+    "username": "normal",
+    "displayName": "Normal User",
+    "password": "password123",
+    "role": "NORMAL"
+  }
+}

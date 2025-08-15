@@ -1,0 +1,17 @@
+{
+  "public": {
+    "name": "Public Channel",
+    "description": "A public channel for testing",
+    "type": "PUBLIC"
+  },
+  "private": {
+    "name": "Private Channel",
+    "description": "A private channel for testing",
+    "type": "PRIVATE"
+  },
+  "direct": {
+    "name": "Direct Message",
+    "description": "A direct message channel",
+    "type": "DIRECT"
+  }
+}

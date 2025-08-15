@@ -1,5 +1,5 @@
 {
-  "extends": "@qup/tsconfig/react-native.json",
+  "extends": "../../packages/tsconfig/react-native.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {

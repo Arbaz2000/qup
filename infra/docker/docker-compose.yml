@@ -1,0 +1,51 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: qup-postgres
+    environment:
+      POSTGRES_USER: qup
+      POSTGRES_PASSWORD: qup_password
+      POSTGRES_DB: qup_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - qup-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: qup-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - qup-network
+
+  # Optional: MinIO for local S3-compatible storage
+  minio:
+    image: minio/minio:latest
+    container_name: qup-minio
+    environment:
+      MINIO_ROOT_USER: qup
+      MINIO_ROOT_PASSWORD: qup_password
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - qup-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+
+networks:
+  qup-network:
+    driver: bridge

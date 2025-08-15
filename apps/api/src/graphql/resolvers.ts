@@ -1,0 +1,72 @@
+// Placeholder for GraphQL resolvers
+// This will be implemented in separate files for each type
+
+export const resolvers = {
+  Query: {
+    // Placeholder queries
+    me: () => null,
+    user: () => null,
+    users: () => [],
+    channels: () => [],
+    channel: () => null,
+    channelMembers: () => [],
+    messages: () => [],
+    message: () => null,
+    messageReplies: () => [],
+    questions: () => [],
+    question: () => null,
+    questionAnswers: () => [],
+    votes: () => [],
+    files: () => [],
+    file: () => null,
+    notifications: () => [],
+    unreadNotificationsCount: () => 0,
+  },
+  
+  Mutation: {
+    // Placeholder mutations
+    register: () => null,
+    login: () => null,
+    logout: () => false,
+    refreshToken: () => null,
+    updateUser: () => null,
+    updateUserRole: () => null,
+    deleteUser: () => false,
+    createChannel: () => null,
+    updateChannel: () => null,
+    deleteChannel: () => false,
+    joinChannel: () => null,
+    leaveChannel: () => false,
+    createMessage: () => null,
+    updateMessage: () => null,
+    deleteMessage: () => false,
+    createQuestion: () => null,
+    updateQuestion: () => null,
+    deleteQuestion: () => false,
+    markBestAnswer: () => null,
+    closeQuestion: () => null,
+    createVote: () => null,
+    updateVote: () => null,
+    deleteVote: () => false,
+    createFile: () => null,
+    deleteFile: () => false,
+    markNotificationAsRead: () => null,
+    markAllNotificationsAsRead: () => false,
+    deleteNotification: () => false,
+  },
+  
+  Subscription: {
+    // Placeholder subscriptions
+    messageCreated: () => null,
+    messageUpdated: () => null,
+    messageDeleted: () => null,
+    questionCreated: () => null,
+    questionUpdated: () => null,
+    questionDeleted: () => null,
+    voteCreated: () => null,
+    voteUpdated: () => null,
+    voteDeleted: () => null,
+    userStatusChanged: () => null,
+    notificationCreated: () => null,
+  },
+};

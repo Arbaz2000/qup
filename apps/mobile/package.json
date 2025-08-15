@@ -1,0 +1,42 @@
+{
+  "name": "@qup/mobile",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "build": "expo build",
+    "eject": "expo eject",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@qup/shared": "workspace:*",
+    "expo": "~49.0.0",
+    "react": "18.2.0",
+    "react-native": "0.72.0",
+    "@apollo/client": "^3.8.0",
+    "graphql": "^16.8.0",
+    "@react-navigation/native": "^6.1.0",
+    "@react-navigation/stack": "^6.3.0",
+    "@react-navigation/bottom-tabs": "^6.5.0",
+    "react-native-screens": "~3.22.0",
+    "react-native-safe-area-context": "4.6.3",
+    "expo-image-picker": "~14.3.0",
+    "expo-file-system": "~15.4.0",
+    "expo-notifications": "~0.20.0",
+    "expo-device": "~5.4.0",
+    "expo-constants": "~14.4.0",
+    "react-native-gesture-handler": "~2.12.0",
+    "react-native-reanimated": "~3.3.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@qup/tsconfig": "workspace:*",
+    "@types/react": "~18.2.14",
+    "@types/react-native": "~0.72.0",
+    "typescript": "^5.0.0"
+  }
+}

@@ -1,0 +1,251 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model with role-based voting system
+model User {
+  id          String      @id @default(cuid())
+  email       String      @unique
+  username    String      @unique
+  displayName String
+  avatar      String?
+  role        UserRole    @default(NORMAL)
+  status      UserStatus  @default(OFFLINE)
+  reputation  Int         @default(0)
+  pushToken   String?
+  lastSeenAt  DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Relations
+  messages        Message[]
+  questions       Question[]
+  votes           Vote[]
+  files           File[]
+  notifications   Notification[]
+  channels        ChannelMember[]
+  createdChannels Channel[] @relation("ChannelCreator")
+
+  @@map("users")
+}
+
+// Channel model for workspace management
+model Channel {
+  id          String       @id @default(cuid())
+  name        String
+  description String?
+  type        ChannelType  @default(PUBLIC)
+  workspaceId String       @default("default") // For future multi-workspace support
+  isArchived  Boolean      @default(false)
+  createdBy   String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  // Relations
+  creator     User             @relation("ChannelCreator", fields: [createdBy], references: [id])
+  members     ChannelMember[]
+  messages    Message[]
+  questions   Question[]
+
+  @@map("channels")
+}
+
+// Channel membership
+model ChannelMember {
+  id        String   @id @default(cuid())
+  userId    String
+  channelId String
+  joinedAt  DateTime @default(now())
+
+  // Relations
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, channelId])
+  @@map("channel_members")
+}
+
+// Message model for chat and Q&A
+model Message {
+  id         String      @id @default(cuid())
+  content    String
+  type       MessageType @default(TEXT)
+  isEdited   Boolean     @default(false)
+  isDeleted  Boolean     @default(false)
+  channelId  String
+  authorId   String
+  parentId   String?     // For replies/comments
+  questionId String?     // For answers/comments on questions
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  // Relations
+  author      User       @relation(fields: [authorId], references: [id])
+  channel     Channel    @relation(fields: [channelId], references: [id])
+  parent      Message?   @relation("MessageReplies", fields: [parentId], references: [id])
+  replies     Message[]  @relation("MessageReplies")
+  question    Question?  @relation(fields: [questionId], references: [id])
+  attachments File[]
+  votes       Vote[]
+
+  @@map("messages")
+}
+
+// Question model for Q&A system
+model Question {
+  id           String         @id @default(cuid())
+  title        String
+  content      String
+  tags         String[]       @default([])
+  status       QuestionStatus @default(OPEN)
+  viewCount    Int            @default(0)
+  answerCount  Int            @default(0)
+  voteCount    Int            @default(0)
+  bestAnswerId String?
+  closedAt     DateTime?
+  closedBy     String?
+  channelId    String
+  authorId     String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  // Relations
+  author      User       @relation(fields: [authorId], references: [id])
+  channel     Channel    @relation(fields: [channelId], references: [id])
+  messages    Message[]
+  votes       Vote[]
+  files       File[]
+
+  @@map("questions")
+}
+
+// Vote model with role-based weights
+model Vote {
+  id         String     @id @default(cuid())
+  userId     String
+  targetId   String
+  targetType VoteTarget
+  type       VoteType
+  weight     Int        @default(1) // Special users have higher weight
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, targetId, targetType])
+  @@map("votes")
+}
+
+// File model for attachments
+model File {
+  id           String   @id @default(cuid())
+  filename     String
+  originalName String
+  mimeType     String
+  size         Int
+  type         FileType
+  url          String
+  thumbnailUrl String?
+  uploadedBy   String
+  messageId    String?
+  questionId   String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  uploader User      @relation(fields: [uploadedBy], references: [id])
+  message  Message?  @relation(fields: [messageId], references: [id])
+  question Question? @relation(fields: [questionId], references: [id])
+
+  @@map("files")
+}
+
+// Notification model for push notifications
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  data      Json?
+  isRead    Boolean          @default(false)
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+// Enums
+enum UserRole {
+  NORMAL
+  SPECIAL
+  MODERATOR
+  ADMIN
+}
+
+enum UserStatus {
+  ONLINE
+  OFFLINE
+  AWAY
+  DO_NOT_DISTURB
+}
+
+enum ChannelType {
+  PUBLIC
+  PRIVATE
+  DIRECT
+}
+
+enum MessageType {
+  TEXT
+  QUESTION
+  ANSWER
+  COMMENT
+  SYSTEM
+}
+
+enum QuestionStatus {
+  OPEN
+  ANSWERED
+  CLOSED
+  DUPLICATE
+}
+
+enum VoteType {
+  UP
+  DOWN
+}
+
+enum VoteTarget {
+  MESSAGE
+  QUESTION
+  ANSWER
+}
+
+enum FileType {
+  IMAGE
+  VIDEO
+  DOCUMENT
+  AUDIO
+}
+
+enum NotificationType {
+  MESSAGE
+  MENTION
+  VOTE
+  ANSWER
+  QUESTION_ANSWERED
+  SYSTEM
+}
